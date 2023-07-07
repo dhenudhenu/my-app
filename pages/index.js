@@ -12,7 +12,7 @@
 
 import React from "react";
 import { Container, Image, Row, Col } from "react-bootstrap";
-import '@/styles/Home.module.css'
+import '../styles/globals.css'
 
 export default function Home() {
     return (

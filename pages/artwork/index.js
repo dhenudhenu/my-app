@@ -5,7 +5,7 @@ import { Container, Row, Col, Pagination, Card } from 'react-bootstrap';
 import ArtWorkCard from 'components/ArtWorkCard';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import '@/styles/Home.module.css'
+import '../styles/globals.css'
 
 
 const PER_PAGE = 12;
