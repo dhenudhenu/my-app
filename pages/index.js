@@ -4,10 +4,10 @@
 *  No part of this assignment has been copied manually or electronically from any other source
 *  (including web sites) or distributed to other students.
 * 
-*  Name: Huu Tinh Luu Student ID: 152712196  Date: 7/7/2023
-*  Netlify Link: https://melodic-youtiao-9f39b3.netlify.app
+*  Name: ___Harmandeep Singh Sidhu___________________ Student ID: ____167885219______________ Date: ____7-07-2023________________
 *
 ********************************************************************************/ 
+
 
 
 import { Row, Col } from 'react-bootstrap';
