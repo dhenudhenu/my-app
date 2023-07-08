@@ -21,55 +21,62 @@ export default function ArtWork() {
   useEffect(() => {
     if (data) {
       const results = [];
-      for (let i = 0; i < data.objectIDs.length; i += PER_PAGE) {
-        const chunk = data.objectIDs.slice(i, i + PER_PAGE);
-        results.push(chunk);
+      if (data.objectIDs) {
+        for (let i = 0; i < data.objectIDs.length; i += PER_PAGE) {
+          const chunk = data.objectIDs.slice(i, i + PER_PAGE);
+          results.push(chunk);
+        }
       }
-      setArtworkList(results);
+      setArtWorkList(results);
       setPage(1);
     }
   }, [data]);
-  
+
   if (error) return <Error statusCode={404} />;
   if (artWorkList === null) return null;
 
   const previousPage = () => {
-    setPage((prevPage) => prevPage > 1 ? prevPage - 1 : prevPage);
+    setPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
   };
 
   const nextPage = () => {
-    setPage((prevPage) => prevPage < artWorkList.length ? prevPage + 1 : prevPage);
+    setPage((prevPage) =>
+      prevPage < artWorkList.length ? prevPage + 1 : prevPage
+    );
   };
 
   return (
     <Container>
-      <Row className='gy-4'>
-        {artWorkList.length > 0 &&
-          artWorkList[page - 1].map((currentObjectID) => (
-            <Col lg={3} key={currentObjectID}>
-              <ArtWorkCard objectID={currentObjectID} />
-            </Col>
-          ))}
-        {artWorkList.length === 0 && (
-          <Card>
-            <Card.Body>
-              <h4>Nothing Here</h4>
-              <p>Try searching for something else</p>
-            </Card.Body>
-          </Card>
-        )}
-      </Row>
-      {artWorkList.length > 0 && (
-        <Row style={{ marginTop: '10px' }}>
-          <Col className='d-flex justify-content-center'>
-            <Pagination>
-              <Pagination.Prev onClick={previousPage} />
-              <Pagination.Item>{page}</Pagination.Item>
-              <Pagination.Next onClick={nextPage} />
-            </Pagination>
-          </Col>
-        </Row>
-      )}
-    </Container>
+  <Row className='gy-4'>
+    {artWorkList.length > 0 &&
+      artWorkList[page - 1].map((currentObjectID) => (
+        <Col lg={3} key={currentObjectID}>
+          <ArtWorkCard objectID={currentObjectID} />
+        </Col>
+      ))}
+    {artWorkList.length === 0 && (
+      <div className="empty-results">
+        <Card>
+          <Card.Body>
+            <h4>Nothing Here</h4>
+            <p>Try searching for something else</p>
+          </Card.Body>
+        </Card>
+      </div>
+    )}
+  </Row>
+  {artWorkList.length > 0 && (
+    <Row style={{ marginTop: '10px' }}>
+      <Col className='d-flex justify-content-center'>
+        <Pagination>
+          <Pagination.Prev onClick={previousPage} />
+          <Pagination.Item>{page}</Pagination.Item>
+          <Pagination.Next onClick={nextPage} />
+        </Pagination>
+      </Col>
+    </Row>
+  )}
+</Container>
+
   );
 }

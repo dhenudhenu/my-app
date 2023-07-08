@@ -2,13 +2,13 @@ import React from "react";
 import { Container } from "react-bootstrap";
 import MainNav from "./MainNav";
 
-export default function Layout({ children }) {
-    return (
-        <>
-        <MainNav />
-        <Container>
-            {children}
-        </Container>
-        </>
-    );
-}
+const Layout = (props) => (
+    <>
+      <MainNav />
+      <br />
+      <Container>{props.children}</Container>
+      <br />
+    </>
+  );
+  
+  export default Layout;

@@ -1,45 +1,62 @@
-import React, { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import Link from 'next/link';
+import { useState } from 'react';
+import { Navbar, Nav, Form, FormControl, Button, Container } from 'react-bootstrap';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
-export default function MainNav() {
-    const router = useRouter();
-    const [searchQuery, setSearchQuery] = useState("");
+const MainNav = () => {
+  const router = useRouter();
+  const [searchValue, setSearchValue] = useState('');
 
-    function getSearchQuery(event) {
-        setSearchQuery(event.target.value);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const searchField = e.target.search.value;
+    
+    if (searchField.trim() !== '') {
+      router.push(`/artwork?title=true&q=${searchField}`);
+      setSearchValue('');
     }
+  };
+  
+  const handleChange = (e) => {
+    setSearchValue(e.target.value);
+  };
 
-    function submitForm(event) {
-        event.preventDefault();
-        router.push(`/artwork?q=${encodeURIComponent(searchQuery)}`);
-    }
 
-    return (
-        <>
-            <Navbar expand="lg" className="bg-body-tertiary fixed-top" data-bs-theme="dark">
-                <Container>
-                    <Navbar.Brand >Huu Tinh Luu</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="me-auto">
-                            <Link href="/" passHref legacyBehavior><Nav.Link className={router.pathname === "/" ? "active" : ""}>Home</Nav.Link></Link>
-                            <Link href="/search" passHref legacyBehavior><Nav.Link >Advanced Search</Nav.Link></Link>
-                        </Nav>
-                        <Form className="d-flex" onSubmit={submitForm}>
-                            <Form.Control onChange={getSearchQuery} type="search" placeholder="Search" className="me-2 bg-white" aria-label="Search" />
-                            <Button type='submit' variant="success">Search</Button>
-                        </Form>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
-            <br />
-            <br />
-        </>
-    );
-}
+  return (
+    <>
+      <Navbar className="fixed-top navbar-dark bg-primary">
+        <Container>
+          <Navbar.Brand>Harmandeep Singh Sidhu</Navbar.Brand>
+          <Nav className="me-auto">
+            <Link href="/" passHref legacyBehavior>
+              <Nav.Link>Home</Nav.Link>
+            </Link>
+            <Link href="/search" passHref legacyBehavior>
+              <Nav.Link>Advanced Search</Nav.Link>
+            </Link>
+          </Nav>
+          <Form className="d-flex" onSubmit={handleSubmit}>
+  <FormControl
+    type="text"
+    placeholder="Search"
+    name="search"
+    value={searchValue}
+    onChange={(e) => setSearchValue(e.target.value)}
+    className="me-2"
+    autoComplete="off"
+  />
+  <Button type="submit" variant="outline-light" className="ms-2">
+    Search
+  </Button>
+</Form>
+
+
+        </Container>
+      </Navbar>
+      <br />
+      <br />
+    </>
+  );
+};
+
+export default MainNav;
