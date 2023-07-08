@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import Error from 'next/error';
 import { Container, Row, Col, Pagination, Card } from 'react-bootstrap';
-import ArtWorkCard from '../components/ArtWorkCard';
+import ArtWorkCard from '/components/ArtWorkCard';
 import { useState, useEffect } from 'react';
 
 const PER_PAGE = 12;
@@ -25,11 +25,11 @@ export default function ArtWork() {
         const chunk = data.objectIDs.slice(i, i + PER_PAGE);
         results.push(chunk);
       }
-      setArtWorkList(results);
+      setArtworkList(results);
       setPage(1);
     }
   }, [data]);
-
+  
   if (error) return <Error statusCode={404} />;
   if (artWorkList === null) return null;
 
