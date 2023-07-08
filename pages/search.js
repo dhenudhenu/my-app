@@ -1,13 +1,13 @@
 import React from "react";
-import { useRouter } from "next/router"
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { Container, Row, Col, Pagination, Card, Form, Button } from 'react-bootstrap';
 
 export default function Search() {
     const router = useRouter();
-    const { register, handleSubmit, formState: { errors } } = useForm({
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm({
         defaultValues: {
-            searchBy: "",
+            searchBy: "title",
             geoLocation: "",
             medium: "",
             isOnView: false,
@@ -16,7 +16,7 @@ export default function Search() {
         }
     });
 
-    function submitForm(data) {
+    const onSubmit = (data) => {
         let queryString = "";
         queryString += `${data.searchBy}=true`;
         queryString += data.geoLocation && `&geoLocation=${encodeURIComponent(data.geoLocation)}`;
@@ -29,13 +29,13 @@ export default function Search() {
     }
 
     return (
-        <Form onSubmit={handleSubmit(submitForm)} style={{marginTop:'20px'}}>
+        <Form onSubmit={handleSubmit(onSubmit)} style={{ marginTop: '20px' }}>
             <Row>
                 <Col>
                     <Form.Group className="mb-3">
                         <Form.Label>Search Query</Form.Label>
-                        <Form.Control type="text" placeholder="" name="q" {...register("q", {require:true})}/>
-                        {errors.searchQuery && <span className="is-invalid">This field is required</span>}
+                        <Form.Control type="text" placeholder="" name="q" {...register("q", { required: true })} />
+                        {errors.q && <span className="is-invalid">This field is required</span>}
                     </Form.Group>
                 </Col>
             </Row>
@@ -51,18 +51,18 @@ export default function Search() {
                 <Col md={4}>
                     <Form.Group className="mb-3">
                         <Form.Label>Geo Location</Form.Label>
-                        <Form.Control type="text" placeholder="" name="geoLocation"  {...register("geoLocation")}/>
+                        <Form.Control type="text" placeholder="" name="geoLocation" {...register("geoLocation")} />
                         <Form.Text className="text-muted">
-                            Case Sensitive String (ie &quot;Europe&quot;, &quot;France&quot;, &quot;Paris&quot;, &quot;China&quot;, &quot;New York&quot;, etc.), with multiple values separated by the | operator
+                            Case Sensitive String (e.g., "Europe", "France", "Paris", "China", "New York", etc.), with multiple values separated by the | operator
                         </Form.Text>
                     </Form.Group>
                 </Col>
                 <Col md={4}>
                     <Form.Group className="mb-3">
                         <Form.Label>Medium</Form.Label>
-                        <Form.Control type="text" placeholder="" name="medium"  {...register("medium")} />
+                        <Form.Control type="text" placeholder="" name="medium" {...register("medium")} />
                         <Form.Text className="text-muted">
-                            Case Sensitive String (ie: &quot;Ceramics&quot;, &quot;Furniture&quot;, &quot;Paintings&quot;, &quot;Sculpture&quot;, &quot;Textiles&quot;, etc.), with multiple values separated by the | operator
+                            Case Sensitive String (e.g., "Ceramics", "Furniture", "Paintings", "Sculpture", "Textiles", etc.), with multiple values separated by the | operator
                         </Form.Text>
                     </Form.Group>
                 </Col>
