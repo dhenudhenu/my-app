@@ -1,12 +1,17 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { registerUser } from "../lib/authenticate";
+import { useAtom } from 'jotai';
+import { userAtom, favouritesAtom, searchHistoryAtom } from '../store';
+import { authenticateUser } from '../lib/authenticate';
+import { getFavourites, getHistory } from '../lib/userData';
 
 export default function Register() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [password2, setPassword2] = useState('');
   const [error, setError] = useState('');
+  const [user, setUser] = useAtom(userAtom);
+  const [, setFavouritesList] = useAtom(favouritesAtom);
+  const [, setSearchHistory] = useAtom(searchHistoryAtom);
   const router = useRouter();
 
   const handleRegister = async (e) => {
