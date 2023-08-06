@@ -1,7 +1,9 @@
-
+import '../styles/globals.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Layout from '../components/Layout';
 import { SWRConfig } from 'swr';
+import { Provider } from 'jotai';
+import RouteGuard from '../components/RouteGuard';
 
 const MyApp = ({ Component, pageProps }) => {
   return (
@@ -21,9 +23,13 @@ const MyApp = ({ Component, pageProps }) => {
         },
       }}
     >
+      <Provider>
       <Layout>
+        <RouteGuard>
         <Component {...pageProps} />
+        </RouteGuard>
       </Layout>
+      </Provider>
     </SWRConfig>
   );
 };

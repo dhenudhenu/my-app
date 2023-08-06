@@ -26,7 +26,7 @@ export default function MainNav() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={() => setIsExpanded(e => !e)} />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Link href="/" passHref><Nav.Link active={router.pathname === "/"} onClick={() => setIsExpanded(false)}>Home</Nav.Link></Link>
+              <Link href="/index" passHref><Nav.Link active={router.pathname === "/index"} onClick={() => setIsExpanded(false)}>Home</Nav.Link></Link>
               <Link href="/search" passHref><Nav.Link active={router.pathname === "/search"} onClick={() => setIsExpanded(false)}>Advanced Search</Nav.Link></Link>
             </Nav>
             &nbsp;
