@@ -1,17 +1,18 @@
-import React from "react";
-import { useRouter } from "next/router"
-import { Container, Row, Col, Pagination, Card } from 'react-bootstrap';
-import ArtworkCardDetail from "/components/ArtWorkCardDetail";
+import { Col, Row } from "react-bootstrap";
+import ArtworkCardDetail from "@/components/ArtworkCardDetail";
+import { useRouter } from "next/router";
 
-export default function ArtWorkByID() {
-    const router = useRouter();
-    const { objectID } = router.query;
+export default function ArtworkById(){
 
-    return (
-        <Row>
-            <Col className="">
-                <ArtworkCardDetail objectID={objectID} />
-            </Col>
-        </Row>
-    )
+  const router = useRouter();
+
+  let {objectID} = router.query;
+
+  return (
+    <Row>
+      <Col>
+        <ArtworkCardDetail objectID={objectID} />
+      </Col>
+    </Row>
+  );
 }
