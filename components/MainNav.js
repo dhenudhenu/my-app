@@ -38,7 +38,7 @@ export default function MainNav() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <Link href="/" passHref>
-                <Nav.Link active={router.pathname === "/"} onClick={() => setIsExpanded(false)}>
+                <Nav.Link active={router.pathname === "/index"} onClick={() => setIsExpanded(false)}>
                   Home
                 </Nav.Link>
               </Link>
