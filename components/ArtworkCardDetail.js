@@ -1,43 +1,59 @@
-import React from 'react';
+import { Button, Card } from 'react-bootstrap';
 import useSWR from 'swr';
 import Error from 'next/error';
-import { Card } from 'react-bootstrap';
+import { useAtom } from 'jotai';
+import { favouritesAtom } from '@/store';
+import { useState } from 'react';
 
+export default function ArtworkCardDetail({ objectID }) {
 
-export default function ArtWorkCardDetail({ objectID }) {
-    const { data, error } = useSWR(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectID}`);
+  const { data, error } = useSWR(objectID ? `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectID}` : null);
 
-    if (error) {
-        return <Error statusCode={404} />
+  const [favouritesList, setFavouritesList] = useAtom(favouritesAtom);
+  const [showAdded, setShowAdded] = useState(favouritesList.includes(objectID));
+
+  function favouritesClicked() {
+
+    if (showAdded) {
+      setFavouritesList(current => current.filter(fav => fav != objectID));
+      setShowAdded(false);
     } else {
-        if (!data) {
-            return null;
-        }
-        else {
-            return (
-                <Card style={{ width: '18rem' }}>
-                    {data.primaryImage && <Card.Img variant="top" src={data.primaryImage} />}
-                    <Card.Body>
-                        {data.title ? <Card.Title>{data.title}</Card.Title> : <Card.Title>N/A</Card.Title>}
-                        <Card.Text>
-                            {data.objectDate ? <p>{data.objectDate}</p> : <p>N/A</p>}
-                            {data.classification ? <p>{data.classification}</p> : <p>N/A</p>}
-                            {data.medium ? <p>{data.medium}</p> : <p>N/A</p>}
-                            <br />
-                            <br />
-                            {data.artistDisplayName ?
-                                <span>
-                                    <p>Artist: {data.artistDisplayName} &nbsp;
-                                    {data.artistWikidata_URL != "" && <a href={data.artistWikidata_URL} target="_blank" rel="noreferrer" >wiki</a>}
-                                    </p>
-                                </span>
-                                : <p>N/A</p>}
-                            {data.creditLine ? <p>{data.creditLine}</p> : <p>N/A</p>}
-                            {data.dimensions ? <p>{data.dimensions}</p> : <p>N/A</p>}
-                        </Card.Text>
-                    </Card.Body>
-                </Card>
-            );
-        }
+      setFavouritesList(current => [...current, objectID]);
+      setShowAdded(true);
     }
+  }
+
+  if (error) {
+    return <Error statusCode={404} />
+  }
+
+  if (data) {
+    return (<>
+      <Card>
+        {data.primaryImage && <Card.Img variant="top" src={data.primaryImage} />}
+        <Card.Body>
+          <Card.Title>{data.title || "N/A"}</Card.Title>
+          <Card.Text>
+            <strong>Date: </strong>{data.objectDate || "N/A"}<br />
+            <strong>Classification: </strong>{data.classification || "N/A"}<br />
+            <strong>Medium: </strong>{data.medium || "N/A"}
+            <br /><br />
+
+            <strong>Artist: </strong> {data.artistDisplayName || "N/A"} {data.artistWikidata_URL && <>( <a href={data.artistWikidata_URL} target="_blank" rel="noreferrer" >wiki</a> )</>}<br />
+            <strong>Credit Line: </strong> {data.creditLine || "N/A"}<br />
+            <strong>Dimensions: </strong> {data.dimensions || "N/A"}<br /><br />
+
+            <Button variant={showAdded ? "primary" : "outline-primary"} onClick={favouritesClicked}>+ Favourite {showAdded && "( added )"}</Button>
+
+          </Card.Text>
+
+        </Card.Body>
+      </Card>
+
+    </>);
+
+  } else {
+    return null
+  }
+
 }

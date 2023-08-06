@@ -1,82 +1,102 @@
-import { useRouter } from 'next/router';
 import useSWR from 'swr';
-import Error from 'next/error';
-import { Container, Row, Col, Pagination, Card } from 'react-bootstrap';
-import ArtWorkCard from '/components/ArtWorkCard';
 import { useState, useEffect } from 'react';
+import { Card, Col, Container, Pagination, Row } from 'react-bootstrap';
+import { useRouter } from 'next/router';
+import ArtworkCard from '@/components/ArtworkCard';
+import Error from 'next/error';
+
+import validObjectIDList from '@/public/data/validObjectIDList.json';
 
 const PER_PAGE = 12;
 
-export default function ArtWork() {
-  const router = useRouter();
-  let finalQuery = router.asPath.split('?')[1];
+export default function Artwork() {
 
-  const [artWorkList, setArtWorkList] = useState(null);
+  const [artworkList, setArtworkList] = useState();
+  const router = useRouter();
   const [page, setPage] = useState(1);
 
-  const { data, error } = useSWR(
-    `https://collectionapi.metmuseum.org/public/collection/v1/search?${finalQuery}`
-  );
+  let finalQuery = router.asPath.split('?')[1];
+
+  const { data, error } = useSWR(`https://collectionapi.metmuseum.org/public/collection/v1/search?${finalQuery}`);
+
+  function nextPage() {
+    if (page < artworkList.length) {
+      setPage(p => p + 1)
+    }
+  }
+
+  function previousPage() {
+    if (page > 1) {
+      setPage(p => p - 1);
+    }
+  }
 
   useEffect(() => {
+
     if (data) {
+      let filteredResults = validObjectIDList.objectIDs.filter(x => data.objectIDs?.includes(x));
       const results = [];
-      if (data.objectIDs) {
-        for (let i = 0; i < data.objectIDs.length; i += PER_PAGE) {
-          const chunk = data.objectIDs.slice(i, i + PER_PAGE);
-          results.push(chunk);
-        }
+
+      for (let i = 0; i < filteredResults.length; i += PER_PAGE) {
+        const chunk = filteredResults.slice(i, i + PER_PAGE);
+        results.push(chunk);
       }
-      setArtWorkList(results);
+
+      setArtworkList(results);
       setPage(1);
     }
-  }, [data]);
 
-  if (error) return <Error statusCode={404} />;
-  if (artWorkList === null) return null;
+  }, [data])
 
-  const previousPage = () => {
-    setPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
-  };
+  if (error) {
+    return <Error statusCode={404} />
+  }
 
-  const nextPage = () => {
-    setPage((prevPage) =>
-      prevPage < artWorkList.length ? prevPage + 1 : prevPage
-    );
-  };
+  if (artworkList) {
+    return (
+      <>
 
-  return (
-    <Container>
-  <Row className='gy-4'>
-    {artWorkList.length > 0 &&
-      artWorkList[page - 1].map((currentObjectID) => (
-        <Col lg={3} key={currentObjectID}>
-          <ArtWorkCard objectID={currentObjectID} />
-        </Col>
-      ))}
-    {artWorkList.length === 0 && (
-      <div className="empty-results">
-        <Card>
-          <Card.Body>
-            <h4>Nothing Here</h4>
-            <p>Try searching for something else</p>
-          </Card.Body>
-        </Card>
-      </div>
-    )}
-  </Row>
-  {artWorkList.length > 0 && (
-    <Row style={{ marginTop: '10px' }}>
-      <Col className='d-flex justify-content-center'>
-        <Pagination>
-          <Pagination.Prev onClick={previousPage} />
-          <Pagination.Item>{page}</Pagination.Item>
-          <Pagination.Next onClick={nextPage} />
-        </Pagination>
-      </Col>
-    </Row>
-  )}
-</Container>
 
-  );
+        {artworkList.length > 0 ?
+
+          <Row className="gy-4">{artworkList[page - 1]?.map(objID => (
+            <Col lg={3} key={objID}><ArtworkCard objectID={objID} /></Col>
+          ))}</Row>
+
+          :
+
+          <Card>
+            <Card.Body>
+              <h4>Nothing Here</h4>Try searching for something else.
+            </Card.Body>
+          </Card>
+
+        }
+
+
+
+        {artworkList.length > 0 && <Row>
+
+          <Col >
+            <br />
+            <Pagination>
+              <Pagination.Prev onClick={previousPage} />
+              <Pagination.Item>{page}</Pagination.Item>
+              <Pagination.Next onClick={nextPage} />
+            </Pagination>
+          </Col>
+        </Row>
+
+        }
+      </>
+    )
+  } else {
+
+    return null
+
+  }
 }
+
+
+
+
