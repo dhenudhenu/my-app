@@ -1,47 +1,49 @@
-import {  Col, Row, Button, Form } from 'react-bootstrap';
+import { Col, Row, Button, Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { useAtom } from 'jotai';
 import { searchHistoryAtom } from '@/store';
-
+import { addToHistory } from '@/lib/userData';
 
 export default function AdvancedSearch() {
-
   const router = useRouter();
 
-  const { register, handleSubmit, formState: {errors} } = useForm(); // no default values for now
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const [searchHistory, setSearchHistory] = useAtom(searchHistoryAtom);
 
-
-  function submitForm(data){
+  async function submitForm(data) {
     let queryString = '';
 
     queryString += `${data.searchBy}=true`;
 
-    if(data.geoLocation)
+    if (data.geoLocation)
       queryString += `&geoLocation=${data.geoLocation}`;
 
-    if(data.medium)
+    if (data.medium)
       queryString += `&medium=${data.medium}`;
 
-    queryString += `&isOnView=${data.isOnView}`;
-    queryString += `&isHighlight=${data.isHighlight}`;
+    queryString += `&isOnView=${data.isOnView || false}`;
+    queryString += `&isHighlight=${data.isHighlight || false}`;
 
-    queryString += `&q=${data.q}`
+    queryString += `&q=${data.q}`;
 
     setSearchHistory(current => [...current, queryString]);
     router.push(`/artwork?${queryString}`);
-
   }
 
   return (<>
-
     <Form onSubmit={handleSubmit(submitForm)}>
       <Row>
         <Col>
           <Form.Group className="mb-3">
             <Form.Label>Search Query</Form.Label>
-            <Form.Control className={errors.q && "is-invalid"} type="text" placeholder="" {...register("q", {required: true})} />
+            <Form.Control
+              className={errors.q && "is-invalid"}
+              type="text"
+              placeholder=""
+              {...register("q", { required: true })}
+            />
+            {errors.q && <div className="invalid-feedback">This field is required.</div>}
           </Form.Group>
         </Col>
       </Row>
@@ -59,17 +61,17 @@ export default function AdvancedSearch() {
             <Form.Label>Geo Location</Form.Label>
             <Form.Control type="text" placeholder="" {...register("geoLocation")} />
             <Form.Text className="text-muted">
-            Case Sensitive String (ie &quot;Europe&quot;, &quot;France&quot;, &quot;Paris&quot;, &quot;China&quot;, &quot;New York&quot;, etc.), with multiple values separated by the | operator
-          </Form.Text>
+              Case Sensitive String (ie "Europe", "France", "Paris", "China", "New York", etc.), with multiple values separated by the | operator
+            </Form.Text>
           </Form.Group>
         </Col>
         <Col md={4}>
           <Form.Group className="mb-3">
             <Form.Label>Medium</Form.Label>
-            <Form.Control type="text" placeholder="" {...register("medium")}/>
+            <Form.Control type="text" placeholder="" {...register("medium")} />
             <Form.Text className="text-muted">
-            Case Sensitive String (ie: &quot;Ceramics&quot;, &quot;Furniture&quot;, &quot;Paintings&quot;, &quot;Sculpture&quot;, &quot;Textiles&quot;, etc.), with multiple values separated by the | operator
-          </Form.Text>
+              Case Sensitive String (ie: "Ceramics", "Furniture", "Paintings", "Sculpture", "Textiles", etc.), with multiple values separated by the | operator
+            </Form.Text>
           </Form.Group>
         </Col>
       </Row>
@@ -85,13 +87,10 @@ export default function AdvancedSearch() {
             label="Currently on View"
             {...register("isOnView")}
           />
-
         </Col>
       </Row>
       <Row>
-
         <Col>
-
           <br />
           <Button variant="primary" type="submit">
             Submit
