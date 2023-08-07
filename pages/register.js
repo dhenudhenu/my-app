@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAtom } from 'jotai';
 import { userAtom, favouritesAtom, searchHistoryAtom } from '../store';
-import { authenticateUser } from '../lib/authenticate';
+
 import { getFavourites, getHistory } from '../lib/userData';
 
 export default function Register() {
@@ -25,6 +25,11 @@ export default function Register() {
       setError(error.message);
     }
   };
+
+  async function updateAtoms() {
+    setFavouritesList(await getFavourites());
+    setSearchHistory(await getHistory());
+  }
 
   return (
     <div>
