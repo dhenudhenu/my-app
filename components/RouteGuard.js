@@ -1,36 +1,38 @@
+// components/RouteGuard.js
+
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { isAuthenticated, getToken } from '@/lib/authenticate'; // Import the isAuthenticated and getToken functions
 import { useAtom } from 'jotai';
-import { isAuthenticatedAtom, favouritesAtom, searchHistoryAtom } from '@/store';
-import { getFavourites, getHistory } from '@/lib/userData';
+import { favouritesAtom, searchHistoryAtom } from '@/store'; // Import the favouritesAtom and searchHistoryAtom
 
 const PUBLIC_PATHS = ['/login', '/register'];
 
-export default function RouteGuard({ children }) {
+const RouteGuard = ({ children }) => {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
-  const [, setFavouritesList] = useAtom(favouritesAtom);
-  const [, setSearchHistory] = useAtom(searchHistoryAtom);
+  const [favouritesList, setFavouritesList] = useAtom(favouritesAtom);
+  const [searchHistory, setSearchHistory] = useAtom(searchHistoryAtom);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token && !PUBLIC_PATHS.includes(router.pathname)) {
+    const isPublicPath = PUBLIC_PATHS.includes(router.pathname);
+    const isAuth = isAuthenticated();
+    const token = getToken();
+
+    if (!isPublicPath && !isAuth) {
       router.push('/login');
-    } else {
-      setIsAuthenticated(!!token);
     }
-  }, []);
 
-  useEffect(() => {
-    async function updateAtoms() {
-      if (isAuthenticated) {
-        setFavouritesList(await getFavourites());
-        setSearchHistory(await getHistory());
+    // Update the atoms with favourites and history data when authenticated
+    if (isAuth && token) {
+      async function updateAtoms() {
+        setFavouritesList(await getFavourites()); 
+        setSearchHistory(await getHistory()); 
       }
+      updateAtoms();
     }
-
-    updateAtoms();
-  }, [isAuthenticated]);
+  }, [router.pathname, setFavouritesList, setSearchHistory]);
 
   return <>{children}</>;
-}
+};
+
+export default RouteGuard;

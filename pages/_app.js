@@ -1,9 +1,15 @@
+import React from 'react';
+import { Provider } from 'jotai';
 import '@/styles/bootstrap.min.css'
+import '../styles/globals.css';
 import Layout from '@/components/Layout';
 import { SWRConfig } from 'swr'
+import RouteGuard from '@/components/RouteGuard';
 
 function MyApp({ Component, pageProps }) {
   return (
+    <Provider>
+    <RouteGuard>
     <Layout>
       <SWRConfig value={{
         fetcher:
@@ -25,7 +31,9 @@ function MyApp({ Component, pageProps }) {
       }}>
         <Component {...pageProps} />
       </SWRConfig>
-    </Layout>
+      </Layout>
+      </RouteGuard>
+    </Provider>
   );
 }
 
