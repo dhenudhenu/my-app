@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { registerUser } from '../lib/authenticate';
+import { favouritesAtom, searchHistoryAtom } from '../store';
 
 const Register = () => {
   const [user, setUser] = useState('');
