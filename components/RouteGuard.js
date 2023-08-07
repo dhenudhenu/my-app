@@ -18,15 +18,15 @@ const RouteGuard = ({ children }) => {
     const isAuth = isAuthenticated();
     const token = getToken();
 
-    if (!isPublicPath && !isAuth) {
-      router.push('/login');
-    }
+  
+
 
     // Update the atoms with favourites and history data when authenticated
     if (isAuth && token) {
       async function updateAtoms() {
         setFavouritesList(await getFavourites()); 
         setSearchHistory(await getHistory()); 
+       
       }
       updateAtoms();
     }

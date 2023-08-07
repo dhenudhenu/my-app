@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useAtom } from 'jotai';
 import { removeToken, readToken, isAuthenticated } from '@/lib/authenticate'; // Import the removeToken, readToken, and isAuthenticated functions
 
-export default function MainNav() {
+export default function MainNav(props) {
   const [isExpanded, setIsExpanded] = useState(false);
   const router = useRouter();
   const token = readToken();
@@ -16,7 +16,7 @@ export default function MainNav() {
   function logout() {
     setIsExpanded(false);
     removeToken();
-    router.push('/login');
+    
   }
 
   return (
@@ -27,8 +27,9 @@ export default function MainNav() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={() => setIsExpanded(e => !e)} />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Link href="/" passHref><Nav.Link active={router.pathname === "/"} onClick={() => setIsExpanded(false)}>Home</Nav.Link></Link>
-              {isAuthenticated() && <Link href="/search" passHref><Nav.Link active={router.pathname === "/search"} onClick={() => setIsExpanded(false)}>Advanced Search</Nav.Link></Link>}
+            <Link href="/" passHref legacyBehavior>
+              <Nav.Link>Home</Nav.Link>
+            </Link>
             </Nav>
 
             {token ? (
@@ -45,7 +46,7 @@ export default function MainNav() {
               </Form>
             ) : (
               <Nav>
-                <Link href="/register" passHref><Nav.Link active={router.pathname === "/register"} onClick={() => setIsExpanded(false)}>Register</Nav.Link></Link>
+                <Link href="pages/register" passHref><Nav.Link active={router.pathname === "pages/register"} onClick={() => setIsExpanded(false)}>Register</Nav.Link></Link>
                 <Link href="/login" passHref><Nav.Link active={router.pathname === "/login"} onClick={() => setIsExpanded(false)}>Login</Nav.Link></Link>
               </Nav>
             )}
