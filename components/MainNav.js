@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useAtom } from 'jotai';
 import { removeToken, readToken, isAuthenticated } from '@/lib/authenticate'; // Import the removeToken, readToken, and isAuthenticated functions
 
-export default function MainNav(props) {
+export default function MainNav() {
   const [isExpanded, setIsExpanded] = useState(false);
   const router = useRouter();
   const token = readToken();
@@ -16,7 +16,7 @@ export default function MainNav(props) {
   function logout() {
     setIsExpanded(false);
     removeToken();
-    
+    router.push('/');
   }
 
   return (
