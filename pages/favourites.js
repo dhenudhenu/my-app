@@ -1,27 +1,30 @@
+// pages/favourites.js
+
+import { useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { Card, Col, Row } from 'react-bootstrap';
-import ArtworkCard from '@/components/ArtworkCard';
-import { favouritesAtom } from '@/store';
+import { favouritesAtom } from '../store';
+import { getFavourites } from '../lib/userData';
 
-export default function Favourites() {
+const Favourites = () => {
+  const [favouritesList, setFavouritesList] = useAtom(favouritesAtom);
 
-  const [favouritesList] = useAtom(favouritesAtom);
+  useEffect(() => {
+    const fetchFavourites = async () => {
+      const favourites = await getFavourites();
+      setFavouritesList(favourites);
+    };
+
+    fetchFavourites();
+  }, [setFavouritesList]);
+
+  if (!favouritesList) return null; // Return null while the favourites list is being fetched
+
   return (
-    <>
-      {favouritesList.length > 0 ?
+    <div>
+      <h1>Favourites</h1>
+      {/* Your favourites rendering goes here */}
+    </div>
+  );
+};
 
-        <Row className="gy-4">{favouritesList.map(objID => (
-          <Col lg={3} key={objID}><ArtworkCard objectID={objID} /></Col>
-        ))}</Row>
-
-        :
-
-        <Card>
-          <Card.Body>
-            <h4>Nothing Here</h4>Try adding some new artwork to the list.
-          </Card.Body>
-        </Card>
-      }
-    </>
-  )
-}
+export default Favourites;
